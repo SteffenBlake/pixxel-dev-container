@@ -1,0 +1,19 @@
+services:
+  dev:
+    image: pixxel-dev-container
+    container_name: example-project
+    tty: true
+    stdin_open: true
+    environment:
+      # https://github.com/ohmyzsh/ohmyzsh/wiki/themes
+      ZSH_THEME: "jonathan"
+    volumes:
+      - nix-store:/nix
+      - workspace-example-project:/workspace
+      - ./flake.nix:/env/flake.nix:ro
+      - ../neovim:/root/.config/nvim
+
+volumes:
+  nix-store:
+  workspace-example-project:
+
