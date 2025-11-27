@@ -15,8 +15,6 @@ RUN chown -R root:root /root
 VOLUME /env
 VOLUME /workspace
 
-ENV SHELL=zsh
-
 # Neovim setup
 RUN mkdir -p /root/.config
 #COPY ./neovim/ /root/.config/nvim/
@@ -24,7 +22,7 @@ RUN mkdir -p /root/.config
 # Load Nix and build environment, then start shell
 CMD /bin/sh -c "\
     . /root/.nix-profile/etc/profile.d/nix.sh && \
-    nix profile add /env && \
+    nix build /env#devShell.x86_64-linux && \
     touch /tmp/nix-ready && \
     tail -f /dev/null"
 

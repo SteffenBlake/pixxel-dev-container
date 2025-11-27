@@ -9,11 +9,13 @@ services:
       ZSH_THEME: "jonathan"
     volumes:
       - nix-store:/nix
+      - local-store:/root/.local
       - workspace-example-project:/workspace
       - ./flake.nix:/env/flake.nix:ro
       - ../neovim:/root/.config/nvim
 
 volumes:
   nix-store:
+  local-store:
   workspace-example-project:
 

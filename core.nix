@@ -1,6 +1,6 @@
 { 
   nixpkgs ? import <nixpkgs> {},
-  enableDotnet ? false,
+  dotnetVersion ? null,
   enableNpm ? false
 }:
 
@@ -23,12 +23,26 @@ let
     pkgs.docker
   ];
 
+  dotnetPkg =
+    if dotnetVersion == 7 then pkgs.dotnet-sdk_7
+    else if dotnetVersion == 8 then pkgs.dotnet-sdk
+    else if dotnetVersion == 9 then pkgs.dotnet-sdk_9
+    else if dotnetVersion == 10 then pkgs.dotnet-sdk_10
+    else null;
+
   extraPackages = lib.concatLists [
-    (if enableDotnet then [ pkgs.dotnet-sdk ] else [])
+    (if dotnetPkg != null then [ dotnetPkg ] else [])
     (if enableNpm then [ pkgs.nodejs ] else [])
   ];
 
-in pkgs.buildEnv {
-  name  = "project-environment";
-  paths = corePackages ++ extraPackages;
+  shellHookParts = lib.concatLists [
+    (if dotnetVersion != null then [ "export NIX_DOTNET_VERSION=${toString dotnetVersion}" ] else [])
+    ["exec zsh"]    
+  ];
+
+  shellHook = builtins.concatStringsSep "\n" shellHookParts;
+
+in pkgs.mkShell {
+  packages = corePackages ++ extraPackages;
+  inherit shellHook;
 }

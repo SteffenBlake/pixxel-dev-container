@@ -1,12 +1,12 @@
 {
-  description = "Project dev environment";
+  description = "Project dev environment (minimal flake)";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs";
 
   outputs = { self, nixpkgs }: {
-    packages.x86_64-linux.default = import ./core.nix {
+    devShell.x86_64-linux = import ./core.nix {
       inherit nixpkgs;
-      enableDotnet = true;
+      dotnetVersion = 9;
     };
   };
 }
