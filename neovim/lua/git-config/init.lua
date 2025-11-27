@@ -8,9 +8,9 @@ function M.setup(ctx)
     gitSigns.setup(ctx)
 end
 
-function M.run()
-    gitConflict.run()
-    gitSigns.run()
+function M.run(ctx)
+    gitConflict.run(ctx)
+    gitSigns.run(ctx)
 end
 
 return M

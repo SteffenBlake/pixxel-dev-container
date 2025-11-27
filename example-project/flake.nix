@@ -6,7 +6,9 @@
   outputs = { self, nixpkgs }: {
     devShell.x86_64-linux = import ./core.nix {
       inherit nixpkgs;
-      dotnetVersion = 9;
+      enableDotnet9 = true;
+      enableNodeJs22 = true;
+      enableSvelte = true;
     };
   };
 }

@@ -19,48 +19,9 @@ function M.setup(ctx)
     vim.opt.rtp:prepend(lazypath)
 
     ctx.lazy = {
-
-        -- NOTE : lsp-Config
-
-        -- Adds cycling for overloads in signature popups for LSP
-        'Issafalcon/lsp-overloads.nvim',
         -- mostly we use fzf in telescope mode for code actions
-        {
-            "ibhagwan/fzf-lua",
-            dependencies = { "nvim-tree/nvim-web-devicons" },
-        },
-        {
-            -- Autocompletion
-            'hrsh7th/nvim-cmp',
-            dependencies = {
-                -- Snippet Engine & its associated nvim-cmp source
-                'L3MON4D3/LuaSnip',
-                'saadparwaiz1/cmp_luasnip',
-
-                -- Adds LSP completion capabilities
-                'hrsh7th/cmp-nvim-lsp',
-
-                -- Adds a number of user-friendly snippets
-                'rafamadriz/friendly-snippets',
-                'onsails/lspkind.nvim',
-            },
-        },
-        {
-            -- Highlight, edit, and navigate code
-            'nvim-treesitter/nvim-treesitter',
-            dependencies = {
-                'nvim-treesitter/nvim-treesitter-textobjects',
-            },
-            build = ':TSUpdate',
-        },
         -- Comment/uncomment commands
         'terrortylor/nvim-comment',
-
-        -- Auto-append closing brace/bracket/parenth/etc
-        {
-            'windwp/nvim-autopairs',
-            event = "InsertEnter",
-        },
     }
 
     -- NOTE : TMUX support

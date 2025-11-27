@@ -10,6 +10,9 @@ services:
     volumes:
       - nix-store:/nix
       - local-store:/root/.local
+      - "${SSH_RSA:-./ssh-key-dummy}:/root/.ssh/id_rsa:ro"
+      - "${SSH_ED25519:-./ssh-key-dummy}:/root/.ssh/id_ed25519:ro"
+      - workspace-example-ssh-store:/root/.ssh
       - workspace-example-project:/workspace
       - ./flake.nix:/env/flake.nix:ro
       - ../neovim:/root/.config/nvim
@@ -17,5 +20,6 @@ services:
 volumes:
   nix-store:
   local-store:
+  workspace-example-ssh-store:
   workspace-example-project:
 

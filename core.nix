@@ -1,7 +1,27 @@
 { 
   nixpkgs ? import <nixpkgs> {},
-  dotnetVersion ? null,
-  enableNpm ? false
+
+  # Languages
+
+  ## Dotnet
+  enableDotnet7 ? false,
+  enableDotnet8 ? false,
+  enableDotnet9 ? false,
+  enableDotnet10 ? false,
+
+  ## NodeJs
+  enableNodeJs20 ? false,
+  enableNodeJs22 ? false,
+  enableNodeJs24 ? false,
+
+  ## Typescript
+  enableTypescript ? false,
+
+  # FE Frameworks
+  enableSvelte ? false,
+  enableVue ? false,
+  enableAngular ? false,
+  enableReact ? false
 }:
 
 let
@@ -21,22 +41,45 @@ let
     pkgs.fzf
     pkgs.lazygit
     pkgs.docker
+    pkgs.openssh
   ];
 
-  dotnetPkg =
-    if dotnetVersion == 7 then pkgs.dotnet-sdk_7
-    else if dotnetVersion == 8 then pkgs.dotnet-sdk
-    else if dotnetVersion == 9 then pkgs.dotnet-sdk_9
-    else if dotnetVersion == 10 then pkgs.dotnet-sdk_10
-    else null;
+  enableDotnet = lib.any (x: x) [
+    enableDotnet7
+    enableDotnet8
+    enableDotnet9
+    enableDotnet10
+  ];
+
+  enableNodeJs = lib.any (x: x) [
+    enableNodeJs20
+    enableNodeJs22
+    enableNodeJs24
+  ];
+
 
   extraPackages = lib.concatLists [
-    (if dotnetPkg != null then [ dotnetPkg ] else [])
-    (if enableNpm then [ pkgs.nodejs ] else [])
+    (if enableDotnet7 then [ pkgs.dotnet-sdk_7 ] else [])
+    (if enableDotnet8 then [ pkgs.dotnet-sdk ] else [])
+    (if enableDotnet9 then [ pkgs.dotnet-sdk_9 ] else [])
+    (if enableDotnet10 then [ pkgs.dotnet-sdk_10 ] else [])
+    # install Roslyn+netcoredbg regardless of versions
+    (if enableDotnet then [ pkgs.roslyn-ls pkgs.netcoredbg ] else []) 
+
+    (if enableNodeJs20 then [ pkgs.nodejs_20 ] else [])
+    (if enableNodeJs22 then [ pkgs.nodejs_22 ] else [])
+    (if enableNodeJs24 then [ pkgs.nodejs_24 ] else [])
   ];
 
   shellHookParts = lib.concatLists [
-    (if dotnetVersion != null then [ "export NIX_DOTNET_VERSION=${toString dotnetVersion}" ] else [])
+    (if enableDotnet then [ "export NIX_ENABLE_DOTNET=1" ] else [])
+    (if enableNodeJs then [ "export NIX_ENABLE_NODEJS=1" ] else [])
+    (if enableTypescript then [ "export NIX_ENABLE_TS=1" ] else [])
+    (if enableSvelte then [ "export NIX_ENABLE_SVELTE=1" ] else [])
+    (if enableVue then [ "export NIX_ENABLE_VUE=1" ] else [])
+    (if enableAngular then [ "export NIX_ENABLE_ANGULAR=1" ] else [])
+    (if enableReact then [ "export NIX_ENABLE_REACT=1" ] else [])
+    ["cd /workspace"]    
     ["exec zsh"]    
   ];
 

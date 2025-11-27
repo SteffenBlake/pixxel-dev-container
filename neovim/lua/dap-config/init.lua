@@ -12,7 +12,7 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
+function M.run(ctx)
     local dap = require('dap')
     local dapui = require("dapui")
     local nvimTreeApi = require('nvim-tree.api')

@@ -19,6 +19,9 @@ VOLUME /workspace
 RUN mkdir -p /root/.config
 #COPY ./neovim/ /root/.config/nvim/
 
+# Set zsh as default shell
+ENV SHELL=zsh
+
 # Load Nix and build environment, then start shell
 CMD /bin/sh -c "\
     . /root/.nix-profile/etc/profile.d/nix.sh && \

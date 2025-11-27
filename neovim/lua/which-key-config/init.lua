@@ -6,27 +6,34 @@ function M.setup(ctx)
     {
         "folke/which-key.nvim",
         event = "VeryLazy",
-        keys = {
-            { "<leader>c", group = "[C]onsole" },
-
-            { "<leader>f", group = "[F]iles" },
-
-            { "<leader>h", group = "[H]arpoon" },
-
-            { "<leader>s", group = "[S]earch" },
-
-            { "<leader>s", group = "[R]efactor" },
-            { "<leader>rr", vim.lsp.buf.rename, desc = "[r]ename" },
-                
-            { "<leader>g", group = "[G]it" },
-            
-            { "<leader>d", group = "[D]ebug" },
-            
-            { "<leader>t", group = "[T]ests" },
-            
-            { "<leader>p", group = "[P]roject" },
-        },
+        keys = {},
     })
 end
+
+function M.run(ctx)
+    local wk = require("which-key")
+    wk.add({
+        { "<leader>c", group = "[c]onsole" },
+
+        { "<leader>f", group = "[f]iles" },
+
+        { "<leader>s", group = "[s]earch" },
+
+        { "<leader>r", group = "[r]efactor" },
+        { "<leader>rr", vim.lsp.buf.rename, desc = "[r]ename" },
+            
+        { "<leader>g", group = "[g]it" },
+        
+        { "<leader>d", group = "[d]ebug" },
+        
+        { "<leader>t", group = "[t]ests" },
+
+        { "<leader>tb", group = "from [b]uffer" },
+        
+        { "<leader>p", group = "[p]roject" },
+    })
+
+end
+
 
 return M

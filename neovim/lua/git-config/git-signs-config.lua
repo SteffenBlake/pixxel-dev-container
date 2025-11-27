@@ -7,7 +7,7 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
+function M.run(ctx)
     require('gitsigns').setup(
         {
             signs = {

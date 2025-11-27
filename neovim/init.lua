@@ -3,9 +3,11 @@
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 
 local console = require('console-config')
+local dap = require('dap-config')
 local dotnet = require('dotnet-config')
 local git = require('git-config')
 local lazy = require('lazy-config')
+local lsp = require('lsp-config')
 local ui = require('ui-config')
 local whichKey = require('which-key-config')
 
@@ -70,15 +72,33 @@ vim.o.termguicolors = true
 
 local context = {};
 
+-- NOTE : SETUP
+
 lazy.setup(context)
 whichKey.setup(context)
+ui.setup(context)
+lsp.setup(context)
 
+dap.setup(context)
 console.setup(context)
 git.setup(context)
-ui.setup(context)
 
+if vim.env.NIX_ENABLE_DOTNET == "1" then
+  dotnet.setup(context)
+end
+
+-- NOTE : RUN
 lazy.run(context)
 
-console.run()
-git.run()
-ui.run()
+whichKey.run(context)
+dap.run(context)
+console.run(context)
+git.run(context)
+lsp.run(context)
+
+if vim.env.NIX_ENABLE_DOTNET == "1" then
+  dotnet.run(context)
+end
+
+-- UI must always run last
+ui.run(context)

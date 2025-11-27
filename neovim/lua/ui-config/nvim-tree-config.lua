@@ -11,7 +11,7 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
+function M.run(ctx)
     local nvimTree = require('nvim-tree')
     local nvimTreeApi = require("nvim-tree.api")
 

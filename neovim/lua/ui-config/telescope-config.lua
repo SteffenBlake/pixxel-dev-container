@@ -24,7 +24,7 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
+function M.run(ctx)
     local telescope = require('telescope')
     local tele_builtin = require('telescope.builtin')
 

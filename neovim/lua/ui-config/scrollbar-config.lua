@@ -7,7 +7,7 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
+function M.run(ctx)
     -- Handles the scrollbar hiding the last char of a line
     --vim.opt.virtualedit = "onemore"
     

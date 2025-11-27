@@ -9,7 +9,7 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
+function M.run(ctx)
     local onedark = require('onedark')
     onedark.setup({
         style = 'cool'

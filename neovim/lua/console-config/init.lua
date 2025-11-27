@@ -37,7 +37,7 @@ local function send_selected()
     send_to_term(cmd)
 end
 
-function M.run()
+function M.run(ctx)
     local wk = require("which-key")
     wk.add({
         { 
@@ -46,7 +46,8 @@ function M.run()
                 vim.cmd("belowright 10split") 
                 vim.cmd("term") 
             end, 
-            desc = "[o]pen a console", mode = "n" 
+            desc = "[o]pen a console", 
+            mode = "n" 
         },
         { 
             "<leader>ce", 

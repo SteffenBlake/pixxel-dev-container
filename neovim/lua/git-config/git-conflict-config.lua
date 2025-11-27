@@ -7,7 +7,7 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
+function M.run(ctx)
     local gitConflict = require('git-conflict')
 
     gitConflict.setup({

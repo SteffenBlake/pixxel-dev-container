@@ -38,12 +38,12 @@ function M.setup(ctx)
     })
 end
 
-function M.run()
-    lualine.run()
-    nvimTree.run()
-    scrollbar.run()
-    telescope.run()
-    theme.run()
+function M.run(ctx)
+    lualine.run(ctx)
+    nvimTree.run(ctx)
+    scrollbar.run(ctx)
+    telescope.run(ctx)
+    theme.run(ctx)
 end
 
 return M
