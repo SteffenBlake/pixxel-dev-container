@@ -126,6 +126,8 @@ function M.run(ctx)
         { "<leader>pb", dotnet.build, desc = "[b]uild" },
         { "<leader>pv", dotnet.project_view, desc = "Project [v]iew" },
         { "<leader>ps", dotnet.secrets, desc = "Project [s]ecrets" },
+
+        { "<leader>tr", dotnet.testrunner, desc = "Dotnet Test [r]unner" },
     })
 end
 
