@@ -28,6 +28,50 @@ function M.run(ctx)
     local telescope = require('telescope')
     local tele_builtin = require('telescope.builtin')
 
+    local telescope = require('telescope')
+
+    telescope.setup {
+        defaults = {
+            layout_strategy = "vertical",
+            layout_config = {
+                vertical = {
+                    width = 0.95,
+                    height = 0.95,
+                    preview_cutoff = 1,
+                    promp_position = "top"
+                },
+                horizontal = {
+                    width = 0.95,
+                    height = 0.95,
+                    preview_cutoff = 1,
+                    promp_position = "top",
+                }
+            },
+            mappings = {
+                i = {
+                    ['<C-u>'] = false,
+                    ['<C-d>'] = false,
+                },
+            },
+        },
+        extensions = {
+            ["ui-select"] = {
+                require("telescope.themes").get_dropdown {
+                    -- even more opts
+                }
+            },
+            undo = {
+
+            }
+        }
+    }
+
+    -- Enable telescope fzf native, if installed
+    pcall(telescope.load_extension, 'fzf')
+
+    telescope.load_extension("ui-select")
+    telescope.load_extension("undo")
+
     local wk = require('which-key')
     wk.add({
         { "<leader>fg", tele_builtin.git_files, desc = "Search [g]it files" },
@@ -46,6 +90,10 @@ function M.run(ctx)
         
         { "<leader>gs", tele_builtin.git_branches, desc = "[s]witch branches" },
     })
+
+    -- Ensure that fzf register as default AFTER all telescope stuff is setup
+    local fzfLua = require("fzf-lua")
+    fzfLua.register_ui_select()
 end
 
 return M

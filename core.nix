@@ -17,6 +17,9 @@
   ## Typescript
   enableTypescript ? false,
 
+  ## Rust
+  enableRust ? false,
+
   # FE Frameworks
   enableSvelte ? false,
   enableVue ? false,
@@ -39,9 +42,11 @@ let
     pkgs.tmux
     pkgs.tmuxinator
     pkgs.fzf
+    pkgs.delta
     pkgs.lazygit
     pkgs.docker
     pkgs.openssh
+    pkgs.ncurses
   ];
 
   enableDotnet = lib.any (x: x) [
@@ -69,16 +74,27 @@ let
     (if enableNodeJs20 then [ pkgs.nodejs_20 ] else [])
     (if enableNodeJs22 then [ pkgs.nodejs_22 ] else [])
     (if enableNodeJs24 then [ pkgs.nodejs_24 ] else [])
+
+    (if enableRust then [ 
+        pkgs.rustc
+        pkgs.cargo
+        pkgs.rust-analyzer
+        pkgs.lldb
+    ] else [])
   ];
 
   shellHookParts = lib.concatLists [
     (if enableDotnet then [ "export NIX_ENABLE_DOTNET=1" ] else [])
+
     (if enableNodeJs then [ "export NIX_ENABLE_NODEJS=1" ] else [])
     (if enableTypescript then [ "export NIX_ENABLE_TS=1" ] else [])
     (if enableSvelte then [ "export NIX_ENABLE_SVELTE=1" ] else [])
     (if enableVue then [ "export NIX_ENABLE_VUE=1" ] else [])
     (if enableAngular then [ "export NIX_ENABLE_ANGULAR=1" ] else [])
     (if enableReact then [ "export NIX_ENABLE_REACT=1" ] else [])
+
+    (if enableRust then [ "export NIX_ENABLE_RUST=1" ] else [])
+
     ["cd /workspace"]    
     ["exec zsh"]    
   ];

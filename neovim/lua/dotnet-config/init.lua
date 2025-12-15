@@ -13,7 +13,6 @@ end
 
 function M.run(ctx)
     local dotnet = require('easy-dotnet')
-
     dotnet.setup({
           lsp = {
           enabled = false, -- Enable builtin roslyn lsp
@@ -111,7 +110,26 @@ function M.run(ctx)
     })
 
     vim.lsp.enable('roslyn_ls')
-    
+   
+    local dap = require('dap')
+
+    dap.adapters.cs = function(callback, config)
+        callback({
+            type = 'executable',
+            command = 'netcoredbg',
+            args = { '--interpreter=vscode' },
+        })
+    end
+
+    dap.configurations.cs = {
+        {
+            type = "cs",
+            name = "attach - netcoredbg",
+            request = "attach",
+            processId = require('dap.utils').pick_process,
+        }
+    }
+
     local wk = require('which-key')
     wk.add({
         {

@@ -44,6 +44,23 @@ function M.run(ctx)
     scrollbar.run(ctx)
     telescope.run(ctx)
     theme.run(ctx)
+
+    local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
+    for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    end
+
+    -- [[ Highlight on yank ]]
+    -- See `:help vim.highlight.on_yank()`
+    local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+    vim.api.nvim_create_autocmd('TextYankPost', {
+        callback = function()
+            vim.highlight.on_yank()
+        end,
+        group = highlight_group,
+        pattern = '*',
+    })
 end
 
 return M

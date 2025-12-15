@@ -5,3 +5,8 @@ export DOTNET_HOME="$(dirname "$(readlink -f $(which dotnet))")"
 export DOTNET_ROOT=$DOTNET_HOME
 
 export PATH="/root/.dotnet/tools:$PATH"
+
+export SHELL="$(which zsh)"
+
+# enable Tmux nesting
+export TMUX=''

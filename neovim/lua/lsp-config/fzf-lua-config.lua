@@ -9,9 +9,14 @@ end
 
 
 function M.run(ctx)
-    require("fzf-lua").setup({
-        "telescope"
+    local fzfLua = require("fzf-lua") 
+    fzfLua.setup({
+        "telescope",
     })
+
+    vim.keymap.set(
+        { "n", "v" }, "<leader>ra", fzfLua.lsp_code_actions, { silent = true, desc = "[a]ction menu" } 
+    )
 end
 
 return M

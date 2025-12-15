@@ -4,7 +4,6 @@
 
 local console = require('console-config')
 local dap = require('dap-config')
-local dotnet = require('dotnet-config')
 local git = require('git-config')
 local lazy = require('lazy-config')
 local lsp = require('lsp-config')
@@ -84,7 +83,11 @@ console.setup(context)
 git.setup(context)
 
 if vim.env.NIX_ENABLE_DOTNET == "1" then
-  dotnet.setup(context)
+  require('dotnet-config').setup(context)
+end
+
+if vim.env.NIX_ENABLE_RUST == "1" then
+  require('rust-config').setup(context)
 end
 
 -- NOTE : RUN
@@ -97,7 +100,11 @@ git.run(context)
 lsp.run(context)
 
 if vim.env.NIX_ENABLE_DOTNET == "1" then
-  dotnet.run(context)
+  require('dotnet-config').run(context)
+end
+
+if vim.env.NIX_ENABLE_RUST == "1" then
+  require('rust-config').run(context)
 end
 
 -- UI must always run last

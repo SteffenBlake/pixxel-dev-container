@@ -7,6 +7,10 @@ services:
     environment:
       # https://github.com/ohmyzsh/ohmyzsh/wiki/themes
       ZSH_THEME: "jonathan"
+      TERM: ${TERM}
+    ports:
+      - "5066:5066"
+      - "5136:5136"
     volumes:
       - nix-store:/nix
       - local-store:/root/.local

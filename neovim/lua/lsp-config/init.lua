@@ -28,6 +28,11 @@ function M.run(ctx)
     nvimAutopairs.run(ctx)
     nvimComment.run(ctx)
     treesitter.run(ctx)
+    
+    local wk = require('which-key')
+    wk.add({
+        { "<leader>e", vim.diagnostic.open_float, desc = "Open floating diagnostic message", mode = { "n" } },
+    })
 end
 
 return M
