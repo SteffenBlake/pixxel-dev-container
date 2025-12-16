@@ -24,7 +24,10 @@
   enableSvelte ? false,
   enableVue ? false,
   enableAngular ? false,
-  enableReact ? false
+  enableReact ? false,
+
+  # Hugo
+  enableHugo ? false
 }:
 
 let
@@ -81,6 +84,8 @@ let
         pkgs.rust-analyzer
         pkgs.lldb
     ] else [])
+
+    (if enableHugo then [ pkgs.hugo ] else [])
   ];
 
   shellHookParts = lib.concatLists [

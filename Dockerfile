@@ -17,7 +17,7 @@ VOLUME /workspace
 
 # Neovim setup
 RUN mkdir -p /root/.config
-#COPY ./neovim/ /root/.config/nvim/
+COPY ./neovim/ /root/.config/nvim/
 
 # Set zsh as default shell
 ENV SHELL=zsh

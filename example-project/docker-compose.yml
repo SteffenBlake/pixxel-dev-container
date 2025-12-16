@@ -21,7 +21,6 @@ services:
       - workspace-example-microsoft-store:/root/.microsft
       - workspace-example-project:/workspace
       - ./flake.nix:/env/flake.nix:ro
-      - ../neovim:/root/.config/nvim
 
 volumes:
   nix-store:
