@@ -50,6 +50,7 @@ let
     pkgs.docker
     pkgs.openssh
     pkgs.ncurses
+    pkgs.unzip
   ];
 
   enableDotnet = lib.any (x: x) [
