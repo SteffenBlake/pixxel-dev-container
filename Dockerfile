@@ -22,10 +22,15 @@ COPY ./neovim/ /root/.config/nvim/
 # Set zsh as default shell
 ENV SHELL=zsh
 
+# Allow unfree licensed nix packaged
+ENV NIXPKGS_ALLOW_UNFREE=1
+# Auto accept android sdk license
+ENV NIXPKGS_ACCEPT_ANDROID_SDK_LICENSE=1
+
 # Load Nix and build environment, then start shell
 CMD /bin/sh -c "\
     . /root/.nix-profile/etc/profile.d/nix.sh && \
-    nix build /env#devShell.x86_64-linux && \
+    nix build /env#devShell.x86_64-linux --impure && \
     touch /tmp/nix-ready && \
     tail -f /dev/null"
 

@@ -9,6 +9,13 @@
   enableDotnet9 ? false,
   enableDotnet10 ? false,
 
+  ## Android
+  android-nixpkgs ? null,
+  enableAndroid33 ? false,
+  enableAndroid34 ? false,
+  enableAndroid35 ? false,
+  enableAndroid36 ? false,
+
   ## NodeJs
   enableNodeJs20 ? false,
   enableNodeJs22 ? false,
@@ -60,20 +67,55 @@ let
     enableDotnet10
   ];
 
+  enableAndroid = lib.any (x: x) [
+    enableAndroid33
+    enableAndroid34
+    enableAndroid35
+    enableAndroid36
+  ];
+
+
   enableNodeJs = lib.any (x: x) [
     enableNodeJs20
     enableNodeJs22
     enableNodeJs24
   ];
 
+  android-nixpkgs = pkgs.callPackage (import (builtins.fetchGit {
+    url = "https://github.com/tadfisher/android-nixpkgs.git";
+    rev = "9b0e6e2cac82807516bce87a12289980bf180fde";
+  })) { channel = "stable"; };
 
   extraPackages = lib.concatLists [
-    (if enableDotnet7 then [ pkgs.dotnet-sdk_7 ] else [])
-    (if enableDotnet8 then [ pkgs.dotnet-sdk ] else [])
-    (if enableDotnet9 then [ pkgs.dotnet-sdk_9 ] else [])
-    (if enableDotnet10 then [ pkgs.dotnet-sdk_10 ] else [])
-    # install Roslyn+netcoredbg regardless of versions
-    (if enableDotnet then [ pkgs.roslyn-ls pkgs.netcoredbg ] else []) 
+    (if enableDotnet then [
+      (
+        with pkgs.dotnetCorePackages;
+        combinePackages (
+          lib.concatLists [
+            (if enableDotnet7 then [ sdk_7_0 ] else [])
+            (if enableDotnet8 then [ sdk_8_0 ] else [])
+            (if enableDotnet9 then [ sdk_9_0 ] else [])
+            (if enableDotnet10 then [ sdk_10_0 ] else [])
+          ]
+        )
+      )
+      pkgs.roslyn-ls
+      pkgs.netcoredbg
+    ] else [])
+
+    (if enableAndroid then [
+      (pkgs.androidenv.composeAndroidPackages {
+        platformVersions = lib.concatLists [
+          (if enableAndroid33 then [ "33" ] else [])
+          (if enableAndroid34 then [ "34" ] else [])
+          (if enableAndroid35 then [ "35" ] else [])
+          (if enableAndroid36 then [ "36" ] else [])
+        ];
+        includeNDK = true;
+      }).androidsdk
+      pkgs.android-tools
+      pkgs.javaPackages.compiler.openjdk17
+    ] else [])
 
     (if enableNodeJs20 then [ pkgs.nodejs_20 ] else [])
     (if enableNodeJs22 then [ pkgs.nodejs_22 ] else [])
@@ -91,7 +133,7 @@ let
 
   shellHookParts = lib.concatLists [
     (if enableDotnet then [ "export NIX_ENABLE_DOTNET=1" ] else [])
-
+    (if enableAndroid then [ "export NIX_ENABLE_ANDROID=1" ] else [])
     (if enableNodeJs then [ "export NIX_ENABLE_NODEJS=1" ] else [])
     (if enableTypescript then [ "export NIX_ENABLE_TS=1" ] else [])
     (if enableSvelte then [ "export NIX_ENABLE_SVELTE=1" ] else [])
@@ -101,8 +143,9 @@ let
 
     (if enableRust then [ "export NIX_ENABLE_RUST=1" ] else [])
 
-    ["cd /workspace"]    
-    ["exec zsh"]    
+    [ "export GLIBC_PATH=${pkgs.glibc}" ]
+    [ "cd /workspace" ]    
+    [ "exec zsh" ]    
   ];
 
   shellHook = builtins.concatStringsSep "\n" shellHookParts;
