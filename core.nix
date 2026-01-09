@@ -16,6 +16,8 @@
   enableAndroid35 ? false,
   enableAndroid36 ? false,
 
+  enableMonogame ? false,
+
   ## NodeJs
   enableNodeJs20 ? false,
   enableNodeJs22 ? false,
@@ -58,6 +60,8 @@ let
     pkgs.openssh
     pkgs.ncurses
     pkgs.unzip
+    pkgs.ripgrep
+    pkgs.gum
   ];
 
   enableDotnet = lib.any (x: x) [
@@ -117,6 +121,22 @@ let
       pkgs.javaPackages.compiler.openjdk17
     ] else [])
 
+    (if enableDotnet && enableAndroid then [
+      (pkgs.callPackage (builtins.fetchGit {
+        url = "https://github.com/SteffenBlake/vscode-mono-debug-server.git";
+        rev = "a873ce110903030e9bd45f349f28d3f1a8c7ea78";
+        submodules = true;
+      }) {})
+    ] else [])
+
+    (if enableMonogame then [
+        pkgs.p7zip
+        pkgs.wine
+        pkgs.wine64
+        pkgs.xorg.xvfb
+        pkgs.fontconfig
+    ] else [])
+
     (if enableNodeJs20 then [ pkgs.nodejs_20 ] else [])
     (if enableNodeJs22 then [ pkgs.nodejs_22 ] else [])
     (if enableNodeJs24 then [ pkgs.nodejs_24 ] else [])
@@ -132,8 +152,13 @@ let
   ];
 
   shellHookParts = lib.concatLists [
+    (if enableDotnet7 then [ "export NIX_ENABLE_DOTNET_7=1" ] else [])
+    (if enableDotnet8 then [ "export NIX_ENABLE_DOTNET_8=1" ] else [])
+    (if enableDotnet9 then [ "export NIX_ENABLE_DOTNET_9=1" ] else [])
+    (if enableDotnet10 then [ "export NIX_ENABLE_DOTNET_10=1" ] else [])
     (if enableDotnet then [ "export NIX_ENABLE_DOTNET=1" ] else [])
     (if enableAndroid then [ "export NIX_ENABLE_ANDROID=1" ] else [])
+    (if enableMonogame then [ "export NIX_ENABLE_MONOGAME=1" ] else [])
     (if enableNodeJs then [ "export NIX_ENABLE_NODEJS=1" ] else [])
     (if enableTypescript then [ "export NIX_ENABLE_TS=1" ] else [])
     (if enableSvelte then [ "export NIX_ENABLE_SVELTE=1" ] else [])

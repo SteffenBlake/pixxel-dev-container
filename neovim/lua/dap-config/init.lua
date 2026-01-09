@@ -37,8 +37,12 @@ function M.run(ctx)
             vim.api.nvim_set_current_win(vim.fn.bufwinid(args.buf))
         end)
     })
-    
-    vim.fn.sign_define('DapBreakpoint', { text = '🔴', texthl = '', linehl = '', numhl = '' })
+   
+    vim.diagnostic.config({
+        signs = {
+            DapBreakpoint = { text = '🔴', texthl = '', linehl = '', numhl = '' }
+        }
+    })
     
     local wk = require('which-key')
     wk.add({

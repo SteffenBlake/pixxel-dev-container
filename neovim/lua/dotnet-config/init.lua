@@ -130,6 +130,25 @@ function M.run(ctx)
         }
     }
 
+    if vim.env.NIX_ENABLE_ANDROID ~= nil then
+        dap.adapters.mono = function(callback, config)
+            callback({
+                type = 'server',
+                command = 'vscode-mono-debug-server',
+                port = 4711,
+                args = { '--server' },
+            })
+        end
+
+        table.insert(dap.configurations.cs, {
+            type = "mono",
+            name = "attach - vscode-mono-debug-server (port: 10000)",
+            address = "localhost",
+            port = 10000,
+            request = "attach",
+        })
+    end
+
     local wk = require('which-key')
     wk.add({
         {

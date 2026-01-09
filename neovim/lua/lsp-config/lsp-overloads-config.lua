@@ -13,7 +13,7 @@ local function on_attach(client, bufnr)
     if client.server_capabilities.signatureHelpProvider then
     local lspOverloads = require('lsp-overloads');
         wk.add({
-            { "<c-s>", ":LspOverloadsSignature<CR>", "Show [C-S]ignatures", { 'n', 'i' } },
+            { "<c-s>", ":LspOverloadsSignature<CR>", desc = "Show [C-S]ignatures", mode = { 'n', 'i' } },
         })
         
         lspOverloads.setup(client, {
@@ -50,8 +50,12 @@ local function on_attach(client, bufnr)
 end
 
 function M.run(ctx)
-    vim.lsp.config('*', {
-        on_attach = on_attach 
+    vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            local bufnr = args.buf
+            on_attach(client, bufnr);
+        end
     })
 end
 
