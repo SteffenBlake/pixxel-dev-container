@@ -32,6 +32,7 @@ function M.run(ctx)
     local wk = require('which-key')
     wk.add({
         { "<leader>e", vim.diagnostic.open_float, desc = "Open floating diagnostic message", mode = { "n" } },
+        { "<leader>rf", vim.lsp.buf.format, desc = "[f]ormat current buffer with LSP", mode = { "n", "v" } },
     })
 end
 
