@@ -1,5 +1,6 @@
 # pixxel-dev-container
-Neovim oriented moduler dev container framework
+
+Neovim oriented modular dev container framework
 
 # Whats this do?
 
@@ -31,77 +32,163 @@ This is where nix comes into play, its a powerful suite of tools as a package ma
 
 # Installing
 
-Step 1: Checkout a copy of this repo on any debian oriented distro
-
-Step 2: run `install.sh` in order to ensure all installed requirements are ready, as well as to build the dockerfile
-
-Step 3: Make a clone of the `./example-project/` template directory to wherever you please
-
-Step 4: Edit the `flake.nix` flags as needed to enabled/disable features to be included in your container
-
-Step 5: Edit the docker-compose.yml file, fixing the following fields:
-
-```
-services:
-  dev:
-    ...
-    container_name: example-project
-    environment:
-      # https://github.com/ohmyzsh/ohmyzsh/wiki/themes
-      ZSH_THEME: "jonathan" <<< Feel free to modify this as you wish
-    volumes:
-      ...
-      - workspace-example-project:/workspace << Update the volume name to match what you set below
-      ...
-
-volumes:
-  ...
-  workspace-example-project: << Change this volume name to be unique as well
+1. Clone the repository:
+```bash
+git clone --recurse-submodules https://github.com/SteffenBlake/pixxel-dev-container.git
+cd pixxel-dev-container
 ```
 
-For example if my project Im working on was called something like FakeCompany's FakeApp I'd do something like
-
+2. Update submodules (required for Neovim configuration):
+```bash
+git submodule update --init --recursive
 ```
-services:
-  dev:
-    image: pixxel-dev-container
-    container_name: fake-company-fake-app
-    tty: true
-    stdin_open: true
-    environment:
-      # https://github.com/ohmyzsh/ohmyzsh/wiki/themes
-      ZSH_THEME: "jonathan"
-    volumes:
-      - nix-store:/nix
-      - workspace-fake-company-fake-app:/workspace
-      - ./flake.nix:/env/flake.nix:ro
 
-volumes:
-  nix-store:
-  workspace-fake-company-fake-app:
+3. Run the installer to ensure all prerequisites are installed and the dev container image is built:
+```bash
+./install.sh
 ```
- 
-Step 6: `docker compose up -d` to start the container up. Once it has a status of "healthy" then...
 
-Step 7: Use `docker exec -it <your-containers-name> zsh` to open up an interactive shell and you should be good to go!
+# Creating a New Project
 
-Example, based on the above example config: `docker exec -it fake-company-fake-app zsh`
+1. Copy the example template directory:
+```bash
+cp -r example-project ~/dev-containers/my-project
+```
 
-# Core Packages
+2. Replace all instances of `workspace-example` in `docker-compose.yml` and volume names with your project name.
 
-## Neovim
-This is the backbone of this stack, I use neovim heavily as my preferred IDE for all work. One challenge I have faced is the fact that over time, as I adapt my neovim config to handle a wider and wider set of LSPs, languages, configs, projects, etc, it also becomes polluted with way too many plugins to be loaded in at once. This makes stuff like updates, load times, etc, start to get bogged down.
+3. Edit `flake.nix` to enable or disable features (toggles) you want in your dev container.
 
-Since the whole point of using neovim in the first place was to leverage its blinding speed, I wanted to couple its own configuration steps up to the nix config (primarily by leveraging env variables)
+# Starting the Dev Container
 
-The end result is this: If my nix config only has, say, the Rust + NPM modules enabled, I really only should be installing, configuring, and loading the same matching plugins in neovim and ignoring the rest. This heavily optimizes my neovim load times and greatly reduces things like install/update speed, as well as reduces memory usage a little bit too.
+Start the container:
+```bash
+docker compose up -d && watch docker ps -a
+```
 
-## tmux + tmuxinator
-This is by far my favorite multiplexer for any distro. Tmux is heavily configurable, plays very nice keybind-wise with stuff like neovim, and allows me the ability to leverage tools like `tmuxinator` to setup a quick "jump right in" preset of "tabs" for a project
+Once the container is healthy, open an interactive shell:
+```bash
+docker exec -it monogame nix develop /env --impure
+```
 
-## fzf
-This is possibly one of my most used CLI tools, the absolute beast of utility this stuff provides is unprecedented. If you havent gotten used to it, just try out stuff like `some-tool --help | fzf` as a way to make browsing the help docs of a tool you use WAY easier. No longer is it a huge pain to figure out the exact right flags you need to use for `tar`!
+Your project workspace is mounted inside `/workspace`.
 
-## lazygit
+# Preinstalled Tools
 
-This is hands down my preferred git TUI, it's just incredibly user friendly and overall feels really good to use. I love this tool and I recommend it to anyone who cares!
+**Shell & Terminal**
+
+- `zsh` – The default shell inside the container, chosen for its speed, configurability, and scripting capabilities. Provides a more powerful interactive shell experience than Bash.  
+
+- `oh-my-zsh` – Framework for managing Zsh configuration, with hundreds of themes and plugins. Makes shell customization and productivity enhancements simple.  
+
+- `tmux` – Terminal multiplexer that allows multiple terminal sessions within a single window. Essential for managing long-running tasks and switching between projects without losing state.  
+
+- `tmuxinator` – Tmux session manager that automates workspace setup. Lets you define complex project layouts and restore them with a single command.  
+
+**Editors & Diffing**
+
+- `neovim` – Modern, highly extensible Vim-based editor preconfigured with your Neovim submodule. Provides a fast, terminal-native editing experience with plugins, LSP integration, and advanced text manipulation.  
+
+- `delta` – A syntax-highlighting pager for Git diffs. Makes reviewing code changes easier and more readable than the standard `git diff`.  
+
+**Version Control & Git Helpers**
+
+- `lazygit` – Terminal UI for Git that allows fast navigation of branches, commits, and staging. Chosen for its speed and simplicity compared to raw Git commands.  
+
+- `ripgrep` – Fast search tool for finding text patterns in files. Used for project-wide searches with superior speed compared to `grep`.  
+
+**Utilities**
+
+- `fzf` – Fuzzy finder for the command line. Integrates with Git, file navigation, and shell history to boost productivity.  
+
+- `gum` – CLI utility for creating interactive prompts, menus, and styled outputs. Used in scripts like `install.sh` for friendly user interaction.  
+
+**Containers & Deployment**
+
+- `docker` + `docker-compose` plugin – Provides containerization and orchestration capabilities. Allows you to build, run, and manage isolated dev environments easily within the containerized workflow.  
+
+**SSH & Networking**
+
+- `openssh` – Provides SSH client capabilities for connecting to remote servers and handling SSH keys inside the container. Supports secure development workflows and remote operations.  
+
+# Preinstalled Tools
+
+## Shell & Terminal
+
+### Zsh
+The default shell inside the container, chosen for its speed, configurability, and scripting capabilities. Provides a more powerful interactive shell experience than Bash.
+
+### Oh-My-Zsh
+Framework for managing Zsh configuration, with hundreds of themes and plugins. Makes shell customization and productivity enhancements simple.
+
+### Tmux
+Terminal multiplexer that allows multiple terminal sessions within a single window. Essential for managing long-running tasks and switching between projects without losing state.
+
+### Tmuxinator
+Tmux session manager that automates workspace setup. Lets you define complex project layouts and restore them with a single command.
+
+## Editors & Diffing
+
+### Neovim
+Modern, highly extensible Vim-based editor preconfigured with your Neovim submodule. Provides a fast, terminal-native editing experience with plugins, LSP integration, and advanced text manipulation.
+
+### Delta
+A syntax-highlighting pager for Git diffs. Makes reviewing code changes easier and more readable than the standard `git diff`.
+
+## Version Control & Git Helpers
+
+### Lazygit
+Terminal UI for Git that allows fast navigation of branches, commits, and staging. Chosen for its speed and simplicity compared to raw Git commands.
+
+### Ripgrep
+Fast search tool for finding text patterns in files. Used for project-wide searches with superior speed compared to `grep`.
+
+## Utilities
+
+### Fzf
+Fuzzy finder for the command line. Integrates with Git, file navigation, and shell history to boost productivity.
+
+### Gum
+CLI utility for creating interactive prompts, menus, and styled outputs. Used in scripts like `install.sh` for friendly user interaction.
+
+## Containers & Deployment
+
+### Docker + Docker Compose Plugin
+Provides containerization and orchestration capabilities. Allows you to build, run, and manage isolated dev environments easily within the containerized workflow.
+
+## SSH & Networking
+
+### OpenSSH
+Provides SSH client capabilities for connecting to remote servers and handling SSH keys inside the container. Supports secure development workflows and remote operations.
+
+# Configurable Toggles
+
+**Dotnet SDKs**
+- `enableDotnet7`
+- `enableDotnet8`
+- `enableDotnet9`
+- `enableDotnet10`
+
+**Android**
+- `enableAndroid33`
+- `enableAndroid34`
+- `enableAndroid35`
+- `enableAndroid36`
+
+**Game Dev**
+- `enableMonogame`
+
+**Node.js / Frontend**
+- `enableNodeJs20`
+- `enableNodeJs22`
+- `enableNodeJs24`
+- `enableTypescript`
+- `enableSvelte`
+- `enableVue`
+- `enableAngular`
+- `enableReact`
+
+**Other Languages / Tools**
+- `enableRust`
+- `enableHugo`
+

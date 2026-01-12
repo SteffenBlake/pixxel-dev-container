@@ -52,7 +52,6 @@ let
     pkgs.coreutils
     pkgs.neovim
     pkgs.tmux
-    pkgs.tmuxinator
     pkgs.fzf
     pkgs.delta
     pkgs.lazygit
