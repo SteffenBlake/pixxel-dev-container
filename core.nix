@@ -36,7 +36,11 @@
   enableReact ? false,
 
   # Hugo
-  enableHugo ? false
+  enableHugo ? false,
+
+  ## AI
+  enableCopilot ? false
+
 }:
 
 let
@@ -166,6 +170,8 @@ let
     (if enableReact then [ "export NIX_ENABLE_REACT=1" ] else [])
 
     (if enableRust then [ "export NIX_ENABLE_RUST=1" ] else [])
+    
+    (if enableCopilot then [ "export NIX_ENABLE_COPILOT=1" ] else [])
 
     [ "export GLIBC_PATH=${pkgs.glibc}" ]
     [ "cd /workspace" ]    
